@@ -8,6 +8,7 @@ interface ReadingFormProps {
   onSubmitRecord: (record: Omit<ReadingRecord, 'id' | 'createdAt' | 'syncStatus'>) => Promise<{ synced: boolean; message: string }>;
   onNavigateToFeed: () => void;
   isGASConnected: boolean;
+  initialBookInfo?: { title: string; author: string; publisher: string; category: string } | null;
 }
 
 const CATEGORIES: BookCategory[] = [
@@ -31,16 +32,21 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
   studentProfile,
   onSubmitRecord,
   onNavigateToFeed,
-  isGASConnected
+  isGASConnected,
+  initialBookInfo
 }) => {
   const [grade, setGrade] = useState(studentProfile.grade || '3학년');
   const [classNum, setClassNum] = useState(studentProfile.classNum || '2반');
   const [studentName, setStudentName] = useState(studentProfile.studentName || '');
   
-  const [bookTitle, setBookTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [publisher, setPublisher] = useState('');
-  const [category, setCategory] = useState<BookCategory>('문학/소설');
+  const [bookTitle, setBookTitle] = useState(initialBookInfo?.title || '');
+  const [author, setAuthor] = useState(initialBookInfo?.author || '');
+  const [publisher, setPublisher] = useState(initialBookInfo?.publisher || '');
+  const [category, setCategory] = useState<BookCategory>(
+    (initialBookInfo?.category && CATEGORIES.includes(initialBookInfo.category as any)
+      ? initialBookInfo.category
+      : '문학/소설') as BookCategory
+  );
   const [rating, setRating] = useState<number>(5);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [readDate, setReadDate] = useState<string>(new Date().toISOString().substring(0, 10));
@@ -49,6 +55,17 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitFeedback, setSubmitFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  useEffect(() => {
+    if (initialBookInfo) {
+      if (initialBookInfo.title) setBookTitle(initialBookInfo.title);
+      if (initialBookInfo.author) setAuthor(initialBookInfo.author);
+      if (initialBookInfo.publisher) setPublisher(initialBookInfo.publisher);
+      if (initialBookInfo.category && CATEGORIES.includes(initialBookInfo.category as any)) {
+        setCategory(initialBookInfo.category as BookCategory);
+      }
+    }
+  }, [initialBookInfo]);
 
   // Keep synced if profile changes
   useEffect(() => {

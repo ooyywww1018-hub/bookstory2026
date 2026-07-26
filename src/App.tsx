@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { ReadingFeed } from './components/ReadingFeed';
+import { BestsellerList } from './components/BestsellerList';
 import { ReadingForm } from './components/ReadingForm';
 import { ReadingKing } from './components/ReadingKing';
 import { TeacherDashboard } from './components/TeacherDashboard';
@@ -25,12 +26,14 @@ import {
 import { SAMPLE_READING_RECORDS } from './data/sampleData';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'form' | 'feed' | 'king' | 'teacher'>('feed');
+  const [activeTab, setActiveTab] = useState<'feed' | 'bestseller' | 'form' | 'king' | 'teacher'>('feed');
   const [records, setRecords] = useState<ReadingRecord[]>([]);
   const [gasConfig, setGasConfig] = useState<GASConfig>({ webAppUrl: '', isAutoSyncEnabled: true });
   const [studentProfile, setStudentProfile] = useState<StudentProfile>({ grade: '3학년', classNum: '2반', studentName: '' });
+  const [selectedBestsellerBook, setSelectedBestsellerBook] = useState<{ title: string; author: string; publisher: string; category: string } | null>(null);
 
   // Modals & Active State
+
   const [selectedRecord, setSelectedRecord] = useState<ReadingRecord | null>(null);
   const [isGASModalOpen, setIsGASModalOpen] = useState<boolean>(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
@@ -146,9 +149,21 @@ export default function App() {
             records={records}
             studentProfile={studentProfile}
             onSelectRecord={(rec) => setSelectedRecord(rec)}
-            onNavigateToForm={() => setActiveTab('form')}
+            onNavigateToForm={() => {
+              setSelectedBestsellerBook(null);
+              setActiveTab('form');
+            }}
             onRefreshData={handleRefreshData}
             isRefreshing={isRefreshing}
+          />
+        )}
+
+        {activeTab === 'bestseller' && (
+          <BestsellerList
+            onSelectBookForReading={(book) => {
+              setSelectedBestsellerBook(book);
+              setActiveTab('form');
+            }}
           />
         )}
 
@@ -158,8 +173,10 @@ export default function App() {
             onSubmitRecord={handleSubmitRecord}
             onNavigateToFeed={() => setActiveTab('feed')}
             isGASConnected={isGASConnected}
+            initialBookInfo={selectedBestsellerBook}
           />
         )}
+
 
         {activeTab === 'king' && (
           <ReadingKing

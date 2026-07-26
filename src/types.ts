@@ -77,3 +77,13 @@ export interface CertificateData {
   schoolName: string;
   teacherName: string;
 }
+
+export interface BestsellerBook {
+  rank: number;
+  title: string;
+  author: string;
+  publisher: string;
+  description: string;
+  category: string;
+}
+
