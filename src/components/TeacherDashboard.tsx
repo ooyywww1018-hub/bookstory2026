@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
   BarChart3, Download, Trash2, Search, Filter, BookOpen, Star, 
-  Users, Calendar, FileSpreadsheet, RefreshCw, Eye, Sparkles, CheckCircle2, Shield, BookMarked
+  Users, Calendar, FileSpreadsheet, RefreshCw, Eye, Sparkles, CheckCircle2, Shield, BookMarked, AlertCircle
 } from 'lucide-react';
 import { ReadingRecord, TeacherStats } from '../types';
 import { calculateTeacherStats, exportToCSV } from '../utils/storage';
@@ -27,6 +27,7 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
   const [selectedClass, setSelectedClass] = useState<string>('전체');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('전체');
+  const [recordToDelete, setRecordToDelete] = useState<ReadingRecord | null>(null);
 
   // Filtered records according to teacher filter choices
   const filteredRecords = useMemo(() => {
@@ -344,11 +345,8 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
                           <Eye className="w-3.5 h-3.5" />
                         </button>
                         <button
-                          onClick={() => {
-                            if (window.confirm(`'${r.bookTitle}' (${r.studentName}) 기록을 정말 삭제하시겠습니까?`)) {
-                              onDeleteRecord(r.id);
-                            }
-                          }}
+                          type="button"
+                          onClick={() => setRecordToDelete(r)}
                           className="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg transition-colors border border-rose-200"
                           title="삭제하기"
                         >
@@ -370,6 +368,56 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
         </div>
 
       </div>
+
+      {/* Delete Confirmation Modal for Teacher */}
+      {recordToDelete && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in print:hidden">
+          <div className="bg-white border border-[#e6dcce] rounded-3xl shadow-2xl p-6 max-w-sm w-full space-y-4 animate-scale-up">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 border border-rose-200 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-[#3b2713] font-serif">독서록 삭제 확인</h4>
+                <p className="text-xs text-[#8c7355] mt-0.5">선택한 독서 기록을 삭제하시겠습니까?</p>
+              </div>
+            </div>
+
+            <div className="p-3.5 bg-[#fbf8f3] rounded-2xl border border-[#e3d5c5] text-xs space-y-1">
+              <div className="font-bold text-[#3b2713] font-serif">📖 {recordToDelete.bookTitle}</div>
+              <div className="text-[11px] text-[#734e2b]">
+                {recordToDelete.grade} {recordToDelete.classNum} <strong className="text-[#3b2713]">{recordToDelete.studentName}</strong> 학생
+              </div>
+            </div>
+
+            <p className="text-[11px] text-rose-600 font-semibold bg-rose-50 p-2.5 rounded-xl border border-rose-200/80 flex items-center gap-1.5">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+              <span>삭제된 독서 기록은 구글 시트 및 로컬 저장소에서 모두 제거됩니다.</span>
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setRecordToDelete(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-[#f5ede1] text-[#593b1d] border border-[#d9ccbd] transition-colors shadow-2xs"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  onDeleteRecord(recordToDelete.id);
+                  setRecordToDelete(null);
+                }}
+                className="px-4.5 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-sm border border-rose-700 transition-colors flex items-center gap-1.5"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>정말 삭제하기</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

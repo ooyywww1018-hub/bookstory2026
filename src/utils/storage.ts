@@ -58,16 +58,16 @@ export const saveStudentProfile = (profile: StudentProfile): void => {
 export const getLocalRecords = (): ReadingRecord[] => {
   try {
     const data = localStorage.getItem(LOCAL_STORAGE_KEY_RECORDS);
-    if (data) {
+    if (data !== null) {
       const parsed = JSON.parse(data);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed;
       }
     }
   } catch (e) {
     console.error('Error loading records from localStorage', e);
   }
-  // If empty, initialize with sample data
+  // If empty or null, initialize with sample data
   localStorage.setItem(LOCAL_STORAGE_KEY_RECORDS, JSON.stringify(SAMPLE_READING_RECORDS));
   return SAMPLE_READING_RECORDS;
 };
@@ -175,7 +175,7 @@ export const fetchRecordsFromGAS = async (gasUrl: string): Promise<{ success: bo
 // Delete record locally and sync deletion to GAS if configured
 export const deleteRecord = async (id: string, gasUrl: string): Promise<boolean> => {
   const records = getLocalRecords();
-  const filtered = records.filter(r => r.id !== id);
+  const filtered = records.filter(r => String(r.id) !== String(id));
   saveLocalRecords(filtered);
 
   if (gasUrl && gasUrl.trim().length > 10) {
@@ -191,6 +191,35 @@ export const deleteRecord = async (id: string, gasUrl: string): Promise<boolean>
   }
 
   return true;
+};
+
+// Update record locally and sync update to GAS if configured
+export const updateReadingRecord = async (
+  updatedRecord: ReadingRecord,
+  gasUrl: string
+): Promise<{ record: ReadingRecord; synced: boolean; message: string }> => {
+  const records = getLocalRecords();
+  const updatedRecords = records.map(r => (r.id === updatedRecord.id ? updatedRecord : r));
+  saveLocalRecords(updatedRecords);
+
+  let synced = false;
+  let message = '독서록이 수정되었습니다.';
+
+  if (gasUrl && gasUrl.trim().length > 10) {
+    try {
+      await fetch(gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'update', ...updatedRecord })
+      });
+      synced = true;
+      message = '구글 시트 연동 및 독서록 수정이 완료되었습니다.';
+    } catch (e) {
+      console.warn('Failed to dispatch update to GAS:', e);
+    }
+  }
+
+  return { record: updatedRecord, synced, message };
 };
 
 // Export to CSV with UTF-8 BOM for Microsoft Excel compatibility

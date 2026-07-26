@@ -20,6 +20,7 @@ import {
   getStudentProfile, 
   saveStudentProfile, 
   saveReadingRecord, 
+  updateReadingRecord,
   fetchRecordsFromGAS, 
   deleteRecord 
 } from './utils/storage';
@@ -98,6 +99,14 @@ export default function App() {
     if (selectedRecord && selectedRecord.id === id) {
       setSelectedRecord(null);
     }
+  };
+
+  // Update Record Handler
+  const handleUpdateRecord = async (updatedRec: ReadingRecord) => {
+    await updateReadingRecord(updatedRec, gasConfig.webAppUrl);
+    const updatedList = getLocalRecords();
+    setRecords(updatedList);
+    setSelectedRecord(updatedRec);
   };
 
   // Save GAS Config
@@ -232,7 +241,9 @@ export default function App() {
         record={selectedRecord}
         onClose={() => setSelectedRecord(null)}
         onDeleteRecord={handleDeleteRecord}
+        onUpdateRecord={handleUpdateRecord}
         isTeacherMode={isTeacherMode}
+        currentStudentName={studentProfile.studentName}
       />
 
       <GASGuideModal
