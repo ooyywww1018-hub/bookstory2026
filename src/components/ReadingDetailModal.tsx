@@ -45,10 +45,10 @@ export const ReadingDetailModal: React.FC<ReadingDetailModalProps> = ({
                 <span className="px-2.5 py-0.5 rounded-full bg-white text-[#734e2b] text-xs font-bold border border-[#d9ccbd]">
                   {record.category}
                 </span>
-                <span className="text-xs text-[#8c7355]">독서록 상세보기</span>
+                <span className="text-xs text-[#8c7355] font-semibold">독서록 상세보기</span>
               </div>
               <h3 className="text-lg font-bold text-[#3b2713] truncate max-w-sm mt-0.5 font-serif">
-                {record.bookTitle}
+                📖 {record.bookTitle}
               </h3>
             </div>
           </div>
@@ -56,7 +56,7 @@ export const ReadingDetailModal: React.FC<ReadingDetailModalProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="p-2 text-[#593b1d] hover:text-[#3b2713] bg-white hover:bg-[#f5ede1] rounded-xl border border-[#d9ccbd] transition-colors text-xs font-semibold flex items-center gap-1.5 px-3"
+              className="p-2 text-[#593b1d] hover:text-[#3b2713] bg-white hover:bg-[#f5ede1] rounded-xl border border-[#d9ccbd] transition-colors text-xs font-semibold flex items-center gap-1.5 px-3 shadow-2xs"
               title="인쇄하기"
             >
               <Printer className="w-4 h-4 text-[#8c6239]" />
@@ -78,7 +78,7 @@ export const ReadingDetailModal: React.FC<ReadingDetailModalProps> = ({
           {/* Top Metadata Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="p-3 bg-[#fbf8f3] rounded-xl border border-[#e3d5c5] print:bg-gray-50 print:border-gray-200">
-              <div className="text-[11px] text-[#8c7355] print:text-gray-500">작성자</div>
+              <div className="text-[11px] text-[#8c7355] print:text-gray-500 font-bold">작성자</div>
               <div className="text-sm font-bold text-[#3b2713] print:text-black mt-0.5 flex items-center gap-1">
                 <User className="w-3.5 h-3.5 text-[#8c6239] print:hidden" />
                 <span>{record.grade} {record.classNum} {record.studentName}</span>
@@ -86,7 +86,7 @@ export const ReadingDetailModal: React.FC<ReadingDetailModalProps> = ({
             </div>
 
             <div className="p-3 bg-[#fbf8f3] rounded-xl border border-[#e3d5c5] print:bg-gray-50 print:border-gray-200">
-              <div className="text-[11px] text-[#8c7355] print:text-gray-500">읽은 날짜</div>
+              <div className="text-[11px] text-[#8c7355] print:text-gray-500 font-bold">읽은 날짜</div>
               <div className="text-sm font-bold text-[#3b2713] print:text-black mt-0.5 flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5 text-[#8c6239] print:hidden" />
                 <span>{record.readDate}</span>
@@ -94,14 +94,14 @@ export const ReadingDetailModal: React.FC<ReadingDetailModalProps> = ({
             </div>
 
             <div className="p-3 bg-[#fbf8f3] rounded-xl border border-[#e3d5c5] print:bg-gray-50 print:border-gray-200">
-              <div className="text-[11px] text-[#8c7355] print:text-gray-500">지은이 / 출판사</div>
+              <div className="text-[11px] text-[#8c7355] print:text-gray-500 font-bold">지은이 / 출판사</div>
               <div className="text-xs font-semibold text-[#593b1d] print:text-black mt-0.5 truncate">
                 {record.author || '-'} / {record.publisher || '-'}
               </div>
             </div>
 
             <div className="p-3 bg-[#fbf8f3] rounded-xl border border-[#e3d5c5] print:bg-gray-50 print:border-gray-200">
-              <div className="text-[11px] text-[#8c7355] print:text-gray-500">추천 별점</div>
+              <div className="text-[11px] text-[#8c7355] print:text-gray-500 font-bold">추천 별점</div>
               <div className="flex items-center gap-1 text-amber-500 mt-0.5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
@@ -149,7 +149,7 @@ export const ReadingDetailModal: React.FC<ReadingDetailModalProps> = ({
 
         {/* Modal Footer */}
         <div className="px-6 py-4 bg-[#f8f3eb] border-t border-[#e6dcce] flex items-center justify-between print:hidden">
-          <div className="text-xs text-[#8c7355]">
+          <div className="text-xs text-[#8c7355] font-semibold">
             등록일시: {new Date(record.createdAt).toLocaleString('ko-KR')}
           </div>
 
@@ -157,7 +157,7 @@ export const ReadingDetailModal: React.FC<ReadingDetailModalProps> = ({
             {isTeacherMode && onDeleteRecord && (
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-500/30 transition-colors"
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors"
               >
                 삭제하기
               </button>
@@ -165,7 +165,7 @@ export const ReadingDetailModal: React.FC<ReadingDetailModalProps> = ({
 
             <button
               onClick={onClose}
-              className="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+              className="px-5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-[#f5ede1] text-[#593b1d] border border-[#d9ccbd] transition-colors shadow-2xs"
             >
               닫기
             </button>

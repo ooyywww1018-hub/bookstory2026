@@ -77,23 +77,23 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-amber-950/40 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-3xl bg-white border border-[#e6dcce] rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
         
         {/* Header */}
-        <div className="px-6 py-5 bg-gradient-to-r from-indigo-900/60 via-slate-900 to-slate-900 border-b border-slate-800 flex items-center justify-between">
+        <div className="px-6 py-5 bg-gradient-to-r from-[#f7f1e5] via-[#f2e7d5] to-[#ebdcc7] border-b border-[#e6dcce] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <div className="w-10 h-10 rounded-2xl bg-[#8c6239] border border-[#734e2b] flex items-center justify-center text-amber-100 shadow-sm">
               <Link2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">구글 앱스 스크립트(GAS) 연동 설정</h3>
-              <p className="text-xs text-slate-400">학급의 구글 스프레드시트와 우리반 독서기록장을 실시간으로 연결합니다.</p>
+              <h3 className="text-lg font-bold text-[#3b2713] font-serif">구글 앱스 스크립트(GAS) 연동 설정</h3>
+              <p className="text-xs text-[#734e2b]">학급의 구글 스프레드시트와 우리반 독서기록장을 실시간으로 연결합니다.</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+            className="p-2 text-[#8c7355] hover:text-[#3b2713] rounded-xl hover:bg-[#f5ede1] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -103,8 +103,8 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
         <div className="p-6 space-y-6 overflow-y-auto custom-scrollbar flex-1">
           
           {/* Active URL Input Area */}
-          <div className="p-4 bg-slate-850 bg-slate-800/60 rounded-xl border border-slate-700/70 space-y-3">
-            <label className="block text-sm font-semibold text-slate-200">
+          <div className="p-4 bg-[#fbf8f3] rounded-2xl border border-[#e3d5c5] space-y-3">
+            <label className="block text-sm font-bold text-[#3b2713]">
               현재 구글 앱스 스크립트 웹 앱 URL
             </label>
             <div className="flex gap-2">
@@ -116,12 +116,12 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
                   setTestResult(null);
                 }}
                 placeholder="https://script.google.com/macros/s/.../exec"
-                className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                className="flex-1 bg-white border border-[#d9ccbd] rounded-xl px-4 py-2.5 text-sm text-[#3b2713] placeholder-[#aa9580] focus:outline-none focus:border-[#8c6239] shadow-2xs"
               />
               <button
                 onClick={handleSave}
                 disabled={testing}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 shadow-md shadow-indigo-600/20 disabled:opacity-50"
+                className="px-5 py-2.5 bg-[#8c6239] hover:bg-[#734e2b] text-amber-50 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-xs border border-[#734e2b] disabled:opacity-50"
               >
                 {testing ? (
                   <>
@@ -130,7 +130,7 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" />
+                    <Check className="w-4 h-4 text-amber-200" />
                     <span>저장 및 연동</span>
                   </>
                 )}
@@ -139,16 +139,16 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
 
             {testResult && (
               <div
-                className={`flex items-center gap-2 text-xs p-3 rounded-lg border ${
+                className={`flex items-center gap-2 text-xs p-3 rounded-xl border font-semibold ${
                   testResult.success
-                    ? 'bg-emerald-950/50 text-emerald-300 border-emerald-500/30'
-                    : 'bg-rose-950/50 text-rose-300 border-rose-500/30'
+                    ? 'bg-emerald-50 text-emerald-900 border-emerald-300'
+                    : 'bg-rose-50 text-rose-900 border-rose-300'
                 }`}
               >
                 {testResult.success ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 ) : (
-                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
                 )}
                 <span>{testResult.message}</span>
               </div>
@@ -156,17 +156,17 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
           </div>
 
           {/* Quick Code Copy Section */}
-          <div className="p-4 bg-gradient-to-r from-indigo-950/40 via-slate-800/40 to-slate-800/40 rounded-xl border border-indigo-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="p-4 bg-[#f8f3eb] rounded-2xl border border-[#d8c3a5] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-indigo-500/20 rounded-lg text-indigo-400">
+              <div className="p-2.5 bg-[#8c6239] rounded-xl text-amber-100 shadow-2xs">
                 <FileCode className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <h4 className="text-sm font-bold text-[#3b2713] flex items-center gap-2 font-serif">
                   <span>Google Apps Script 코드 (`Code.gs`)</span>
-                  <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30">CORS 지원</span>
+                  <span className="text-[10px] bg-amber-100 text-[#734e2b] px-2 py-0.5 rounded border border-amber-300 font-bold">CORS 지원</span>
                 </h4>
-                <p className="text-xs text-slate-400">구글 스프레드시트의 Apps Script 편집기에 붙여넣을 서버용 자바스크립트입니다.</p>
+                <p className="text-xs text-[#734e2b]">구글 스프레드시트의 Apps Script 편집기에 붙여넣을 서버용 자바스크립트입니다.</p>
               </div>
             </div>
 
@@ -174,8 +174,8 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
               onClick={handleCopyCode}
               className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
                 copied
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30'
-                  : 'bg-slate-700 hover:bg-slate-600 text-slate-100 border border-slate-600'
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : 'bg-white hover:bg-[#f5ede1] text-[#593b1d] border border-[#d9ccbd] shadow-2xs'
               }`}
             >
               {copied ? (
@@ -185,7 +185,7 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4 text-indigo-300" />
+                  <Copy className="w-4 h-4 text-[#8c6239]" />
                   <span>Code.gs 코드 복사</span>
                 </>
               )}
@@ -194,8 +194,8 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
 
           {/* Step-by-Step Guide Accordion / Timeline */}
           <div>
-            <h4 className="text-sm font-bold text-slate-200 mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
+            <h4 className="text-sm font-bold text-[#3b2713] mb-3 flex items-center gap-2 font-serif">
+              <Sparkles className="w-4 h-4 text-[#8c6239]" />
               <span>연동 방법 5단계 가이드</span>
             </h4>
 
@@ -206,25 +206,25 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
                   onClick={() => setActiveStep(s.step)}
                   className={`p-3 rounded-xl border text-left transition-all ${
                     activeStep === s.step
-                      ? 'bg-indigo-600 border-indigo-500 text-white shadow-md shadow-indigo-600/30'
-                      : 'bg-slate-800/80 border-slate-700/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                      ? 'bg-[#593b1d] border-[#3b2713] text-amber-50 shadow-2xs'
+                      : 'bg-white border-[#d9ccbd] text-[#6e5843] hover:bg-[#f5ede1]'
                   }`}
                 >
                   <div className="text-[11px] font-bold opacity-80">STEP {s.step}</div>
-                  <div className="text-xs font-semibold truncate">{s.title}</div>
+                  <div className="text-xs font-bold truncate">{s.title}</div>
                 </button>
               ))}
             </div>
 
             {/* Active Step Details */}
-            <div className="p-5 bg-slate-950/60 rounded-xl border border-slate-800 text-slate-300 text-sm space-y-3">
-              <div className="flex items-center gap-2 text-indigo-400 font-bold text-base">
-                <span className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center text-xs">
+            <div className="p-5 bg-[#fbf8f3] rounded-2xl border border-[#e3d5c5] text-[#3b2713] text-sm space-y-3">
+              <div className="flex items-center gap-2 text-[#734e2b] font-bold text-base font-serif">
+                <span className="w-6 h-6 rounded-full bg-[#8c6239] text-amber-50 flex items-center justify-center text-xs font-bold">
                   {steps[activeStep - 1].step}
                 </span>
                 <span>{steps[activeStep - 1].title}</span>
               </div>
-              <p className="text-slate-300 leading-relaxed text-xs sm:text-sm">
+              <p className="text-[#593b1d] leading-relaxed text-xs sm:text-sm">
                 {steps[activeStep - 1].desc}
               </p>
 
@@ -233,7 +233,7 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
                   href="https://drive.google.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-medium underline mt-1"
+                  className="inline-flex items-center gap-1.5 text-xs text-[#8c6239] hover:text-[#734e2b] font-bold underline mt-1"
                 >
                   <span>구글 드라이브 바로가기</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -242,15 +242,15 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
 
               {activeStep === 3 && (
                 <div className="relative mt-2">
-                  <pre className="p-3 bg-slate-900 rounded-lg text-[11px] text-slate-300 overflow-x-auto max-h-32 border border-slate-800 font-mono">
+                  <pre className="p-3 bg-white rounded-xl text-[11px] text-[#3b2713] overflow-x-auto max-h-32 border border-[#d9ccbd] font-mono">
                     {GAS_SCRIPT_CODE.substring(0, 300)}...
                   </pre>
                 </div>
               )}
 
               {activeStep === 4 && (
-                <div className="p-3 bg-amber-950/30 border border-amber-500/30 rounded-lg text-amber-300 text-xs flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
+                <div className="p-3 bg-amber-50 border border-amber-300 rounded-xl text-[#734e2b] text-xs flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
                   <span>
                     <strong>주의:</strong> [액세스 권한이 있는 사용자] 항목을 반드시 <strong>'모든 사용자 (Anyone)'</strong>로 설정해야 학생들이 로그인 없이 자유롭게 독서록을 제출할 수 있습니다.
                   </span>
@@ -260,13 +260,13 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
           </div>
 
           {/* Script Code Preview Toggle */}
-          <details className="group bg-slate-950/40 rounded-xl border border-slate-800">
-            <summary className="p-4 text-xs font-semibold text-slate-400 hover:text-slate-200 cursor-pointer flex items-center justify-between">
+          <details className="group bg-[#fbf8f3] rounded-2xl border border-[#e3d5c5]">
+            <summary className="p-4 text-xs font-bold text-[#734e2b] hover:text-[#3b2713] cursor-pointer flex items-center justify-between">
               <span>전체 Code.gs 소스 코드 미리보기</span>
               <span className="group-open:rotate-180 transition-transform">▼</span>
             </summary>
             <div className="p-4 pt-0">
-              <pre className="p-3 bg-slate-950 rounded-lg text-[11px] text-slate-300 font-mono overflow-x-auto max-h-48 border border-slate-800">
+              <pre className="p-3 bg-white rounded-xl text-[11px] text-[#3b2713] font-mono overflow-x-auto max-h-48 border border-[#d9ccbd]">
                 {GAS_SCRIPT_CODE}
               </pre>
             </div>
@@ -275,10 +275,10 @@ export const GASGuideModal: React.FC<GASGuideModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-slate-900 border-t border-slate-800 flex justify-end gap-2">
+        <div className="px-6 py-4 bg-[#f8f3eb] border-t border-[#e6dcce] flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+            className="px-5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-[#f5ede1] text-[#593b1d] border border-[#d9ccbd] transition-colors shadow-2xs"
           >
             닫기
           </button>

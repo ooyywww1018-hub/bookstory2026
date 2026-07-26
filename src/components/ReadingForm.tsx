@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Star, Send, Sparkles, HelpCircle, CheckCircle2, Bookmark, Lightbulb, AlertCircle } from 'lucide-react';
+import { BookOpen, Star, Send, Sparkles, HelpCircle, CheckCircle2, Bookmark, Lightbulb, AlertCircle, BookMarked } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { BookCategory, ReadingRecord, StudentProfile } from '../types';
 
@@ -161,49 +161,51 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
     <div className="max-w-4xl mx-auto space-y-6 pb-12 animate-fade-in">
       
       {/* Banner Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-indigo-900/80 via-slate-900 to-violet-950/80 border border-indigo-500/30 shadow-xl relative overflow-hidden">
-        <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#f8f3eb] via-[#f2e7d5] to-[#ebdcc7] border border-[#d8c3a5] shadow-xs relative overflow-hidden">
+        <div className="absolute -right-8 -bottom-8 opacity-10 text-[#593b1d] pointer-events-none">
+          <BookMarked className="w-56 h-56" />
+        </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-[#734e2b] border border-amber-300 text-xs font-bold mb-3 shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
               <span>오늘의 생각 더하기</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              책 한 권의 감동을 독서록에 담아보세요!
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#3b2713] tracking-tight font-serif">
+              책 한 권의 감동을 독서록에 담아보세요 📖
             </h2>
-            <p className="text-slate-300 text-xs sm:text-sm mt-1">
-              읽은 책의 줄거리와 나만의 솔직한 느낌을 기록하면 우리반 친구들과 공유할 수 있어요.
+            <p className="text-[#6e5843] text-xs sm:text-sm mt-1">
+              읽은 책의 줄거리와 나만의 솔직한 느낌을 기록하면 우리반 친구들과 생각을 나눌 수 있어요.
             </p>
           </div>
 
           <div className="shrink-0 flex items-center gap-2">
             {!isGASConnected && (
-              <span className="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-xl font-medium">
-                💾 로컬 저장 모드
+              <span className="text-xs bg-white text-[#734e2b] border border-[#d9ccbd] px-3 py-1.5 rounded-xl font-bold shadow-2xs">
+                💾 로컬 저장소 모드
               </span>
             )}
           </div>
         </div>
       </div>
 
-      {/* Main Form Box */}
-      <form onSubmit={handleSubmit} className="p-6 sm:p-8 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl space-y-8">
+      {/* Main Form Box - Clean White Card */}
+      <form onSubmit={handleSubmit} className="p-6 sm:p-8 bg-white border border-[#e6dcce] rounded-3xl shadow-xs space-y-8">
         
         {/* Section 1: Student Metadata */}
         <div>
-          <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+          <h3 className="text-sm font-bold text-[#734e2b] uppercase tracking-wider mb-4 flex items-center gap-2 font-serif">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#8c6239]"></span>
             1. 작성자 정보
           </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-slate-950/50 rounded-2xl border border-slate-800">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-[#fbf8f3] rounded-2xl border border-[#e3d5c5]">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">학년</label>
+              <label className="block text-xs font-bold text-[#593b1d] mb-1.5">학년</label>
               <select
                 value={grade}
                 onChange={(e) => setGrade(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-[#d9ccbd] rounded-xl px-3.5 py-2.5 text-sm font-bold text-[#3b2713] focus:outline-none focus:border-[#8c6239] shadow-2xs"
               >
                 {['1학년', '2학년', '3학년', '4학년', '5학년', '6학년', '중1', '중2', '중3', '고1', '고2', '고3'].map(g => (
                   <option key={g} value={g}>{g}</option>
@@ -212,11 +214,11 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">반</label>
+              <label className="block text-xs font-bold text-[#593b1d] mb-1.5">반</label>
               <select
                 value={classNum}
                 onChange={(e) => setClassNum(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-[#d9ccbd] rounded-xl px-3.5 py-2.5 text-sm font-bold text-[#3b2713] focus:outline-none focus:border-[#8c6239] shadow-2xs"
               >
                 {Array.from({ length: 15 }, (_, i) => `${i + 1}반`).map(c => (
                   <option key={c} value={c}>{c}</option>
@@ -225,14 +227,14 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">학생 이름 *</label>
+              <label className="block text-xs font-bold text-[#593b1d] mb-1.5">학생 이름 *</label>
               <input
                 type="text"
                 required
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
                 placeholder="예: 김민준"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-white border border-[#d9ccbd] rounded-xl px-3.5 py-2.5 text-sm text-[#3b2713] placeholder-[#aa9580] focus:outline-none focus:border-[#8c6239] focus:ring-1 focus:ring-[#8c6239] shadow-2xs"
               />
             </div>
           </div>
@@ -240,14 +242,14 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
 
         {/* Section 2: Book Info */}
         <div>
-          <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+          <h3 className="text-sm font-bold text-[#734e2b] uppercase tracking-wider mb-4 flex items-center gap-2 font-serif">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#8c6239]"></span>
             2. 도서 기본 정보
           </h3>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">도서명 (책 제목) *</label>
+              <label className="block text-xs font-bold text-[#593b1d] mb-1.5">도서명 (책 제목) *</label>
               <div className="relative">
                 <input
                   type="text"
@@ -255,49 +257,49 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
                   value={bookTitle}
                   onChange={(e) => setBookTitle(e.target.value)}
                   placeholder="예: 아몬드, 어린 왕자, 마당을 나온 암탉..."
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-[#d9ccbd] rounded-xl pl-10 pr-4 py-3 text-sm text-[#3b2713] font-medium placeholder-[#aa9580] focus:outline-none focus:border-[#8c6239] focus:ring-1 focus:ring-[#8c6239] shadow-2xs"
                 />
-                <BookOpen className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                <BookOpen className="w-4 h-4 text-[#8c7355] absolute left-3.5 top-3.5" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">지은이 (저자)</label>
+                <label className="block text-xs font-bold text-[#593b1d] mb-1.5">지은이 (저자)</label>
                 <input
                   type="text"
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
                   placeholder="예: 손원평"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-[#d9ccbd] rounded-xl px-3.5 py-2.5 text-sm text-[#3b2713] placeholder-[#aa9580] focus:outline-none focus:border-[#8c6239] focus:ring-1 focus:ring-[#8c6239] shadow-2xs"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">출판사</label>
+                <label className="block text-xs font-bold text-[#593b1d] mb-1.5">출판사</label>
                 <input
                   type="text"
                   value={publisher}
                   onChange={(e) => setPublisher(e.target.value)}
                   placeholder="예: 창비"
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-[#d9ccbd] rounded-xl px-3.5 py-2.5 text-sm text-[#3b2713] placeholder-[#aa9580] focus:outline-none focus:border-[#8c6239] focus:ring-1 focus:ring-[#8c6239] shadow-2xs"
                 />
               </div>
             </div>
 
             {/* Category selection */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-2">도서 장르/카테고리</label>
+              <label className="block text-xs font-bold text-[#593b1d] mb-2">도서 장르/카테고리</label>
               <div className="flex flex-wrap gap-2">
                 {CATEGORIES.map((cat) => (
                   <button
                     type="button"
                     key={cat}
                     onClick={() => setCategory(cat)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-all ${
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${
                       category === cat
-                        ? 'bg-indigo-600 text-white border-indigo-500 shadow-md shadow-indigo-600/30'
-                        : 'bg-slate-950 text-slate-300 border-slate-700 hover:border-slate-600'
+                        ? 'bg-[#593b1d] text-amber-50 border-[#3b2713] shadow-xs'
+                        : 'bg-white text-[#6e5843] border-[#d9ccbd] hover:bg-[#f5ede1]'
                     }`}
                   >
                     {cat}
@@ -309,10 +311,10 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
             {/* Rating & Date */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  나의 추천 별점: <strong className="text-amber-400 font-bold">{rating}점</strong>
+                <label className="block text-xs font-bold text-[#593b1d] mb-1.5">
+                  나의 추천 별점: <strong className="text-amber-600 font-bold">{rating}점</strong>
                 </label>
-                <div className="flex items-center gap-1.5 bg-slate-950 p-2.5 rounded-xl border border-slate-700 w-fit">
+                <div className="flex items-center gap-1.5 bg-white p-2.5 rounded-xl border border-[#d9ccbd] w-fit shadow-2xs">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       type="button"
@@ -325,8 +327,8 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
                       <Star
                         className={`w-6 h-6 transition-colors ${
                           (hoverRating || rating) >= star
-                            ? 'text-amber-400 fill-amber-400'
-                            : 'text-slate-600'
+                            ? 'text-amber-500 fill-amber-400'
+                            : 'text-[#d4c3b1]'
                         }`}
                       />
                     </button>
@@ -335,12 +337,12 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">읽은 날짜</label>
+                <label className="block text-xs font-bold text-[#593b1d] mb-1.5">읽은 날짜</label>
                 <input
                   type="date"
                   value={readDate}
                   onChange={(e) => setReadDate(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white border border-[#d9ccbd] rounded-xl px-3.5 py-2.5 text-sm font-bold text-[#3b2713] focus:outline-none focus:border-[#8c6239] shadow-2xs"
                 />
               </div>
             </div>
@@ -351,11 +353,11 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
         {/* Section 3: Summary */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <h3 className="text-sm font-bold text-[#734e2b] uppercase tracking-wider flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8c6239]"></span>
               3. 책의 줄거리 요약 *
             </h3>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-[#8c7355] font-semibold">
               {summary.length}자 (최소 10자 권장)
             </span>
           </div>
@@ -366,26 +368,26 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
             placeholder="책의 핵심 내용이나 줄거리를 간단히 간추려 작성해 보세요."
-            className="w-full bg-slate-950 border border-slate-700 rounded-2xl p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 custom-scrollbar leading-relaxed"
+            className="w-full bg-white border border-[#d9ccbd] rounded-2xl p-4 text-sm text-[#3b2713] placeholder-[#aa9580] focus:outline-none focus:border-[#8c6239] focus:ring-1 focus:ring-[#8c6239] custom-scrollbar leading-relaxed shadow-2xs"
           ></textarea>
         </div>
 
         {/* Section 4: Reflection & Prompts */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <h3 className="text-sm font-bold text-[#734e2b] uppercase tracking-wider flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8c6239]"></span>
               4. 나의 생각과 느낌 (독후감) *
             </h3>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-[#8c7355] font-semibold">
               {reflection.length}자 (최소 10자 권장)
             </span>
           </div>
 
           {/* Quick Helper Prompts */}
-          <div className="mb-3 p-3 bg-slate-950/70 rounded-xl border border-slate-800 space-y-2">
-            <div className="flex items-center gap-1.5 text-xs text-amber-300 font-semibold">
-              <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
+          <div className="mb-3 p-3.5 bg-[#fbf8f3] rounded-2xl border border-[#e3d5c5] space-y-2">
+            <div className="flex items-center gap-1.5 text-xs text-[#734e2b] font-bold">
+              <Lightbulb className="w-3.5 h-3.5 text-amber-600" />
               <span>작성 도우미 (클릭 시 가이드 문구가 추가됩니다)</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -394,7 +396,7 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
                   type="button"
                   key={i}
                   onClick={() => handleAddPrompt(prompt)}
-                  className="px-2.5 py-1 bg-slate-850 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs text-slate-300 hover:text-white transition-colors"
+                  className="px-2.5 py-1 bg-white hover:bg-[#f5ede1] border border-[#d9ccbd] rounded-lg text-xs font-semibold text-[#593b1d] transition-colors shadow-2xs"
                 >
                   {prompt}
                 </button>
@@ -408,38 +410,38 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
             value={reflection}
             onChange={(e) => setReflection(e.target.value)}
             placeholder="책을 읽고 느낀 점, 깨달은 점, 주인공에게 하고 싶은 말 등을 자율적으로 작성해 주세요."
-            className="w-full bg-slate-950 border border-slate-700 rounded-2xl p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 custom-scrollbar leading-relaxed"
+            className="w-full bg-white border border-[#d9ccbd] rounded-2xl p-4 text-sm text-[#3b2713] placeholder-[#aa9580] focus:outline-none focus:border-[#8c6239] focus:ring-1 focus:ring-[#8c6239] custom-scrollbar leading-relaxed shadow-2xs"
           ></textarea>
         </div>
 
         {/* Feedback Alert */}
         {submitFeedback && (
           <div
-            className={`p-4 rounded-xl border flex items-center gap-3 text-sm ${
+            className={`p-4 rounded-2xl border flex items-center gap-3 text-sm font-semibold ${
               submitFeedback.type === 'success'
-                ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-200'
-                : 'bg-rose-950/60 border-rose-500/40 text-rose-200'
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                : 'bg-rose-50 border-rose-300 text-rose-900'
             }`}
           >
             {submitFeedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             ) : (
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
+              <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
             )}
             <span>{submitFeedback.message}</span>
           </div>
         )}
 
         {/* Form Actions */}
-        <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-400">
+        <div className="pt-4 border-t border-[#f0e6da] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-[#8c7355] font-medium">
             * 제출 후에도 교사 및 학생 본인이 등록된 독서록을 확인할 수 있습니다.
           </p>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-xl shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full sm:w-auto px-8 py-3.5 bg-[#8c6239] hover:bg-[#734e2b] text-amber-50 font-bold rounded-xl shadow-sm border border-[#734e2b] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
@@ -448,7 +450,7 @@ export const ReadingForm: React.FC<ReadingFormProps> = ({
               </>
             ) : (
               <>
-                <Send className="w-4 h-4 text-amber-300" />
+                <Send className="w-4 h-4 text-amber-200" />
                 <span>독서록 등록하기</span>
               </>
             )}
