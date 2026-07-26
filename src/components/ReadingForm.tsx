@@ -1,0 +1,445 @@
+import React, { useState, useEffect } from 'react';
+import { BookOpen, Star, Send, Sparkles, HelpCircle, CheckCircle2, Bookmark, Lightbulb, AlertCircle } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { BookCategory, ReadingRecord, StudentProfile } from '../types';
+
+interface ReadingFormProps {
+  studentProfile: StudentProfile;
+  onSubmitRecord: (record: Omit<ReadingRecord, 'id' | 'createdAt' | 'syncStatus'>) => Promise<{ synced: boolean; message: string }>;
+  onNavigateToFeed: () => void;
+  isGASConnected: boolean;
+}
+
+const CATEGORIES: BookCategory[] = [
+  '문학/소설',
+  '인문/교양',
+  '과학/자연',
+  '역사/사회',
+  '예술/체육',
+  '만화/동화',
+  '기타'
+];
+
+const REFLECTION_PROMPTS = [
+  '💡 가장 인상 깊었던 장면이나 문장:',
+  '🔍 책을 읽고 새롭게 깨달은 점:',
+  '💌 주인공이나 작가에게 전하고 싶은 말:',
+  '👍 이 책을 다른 친구들에게 추천하는 이유:'
+];
+
+export const ReadingForm: React.FC<ReadingFormProps> = ({
+  studentProfile,
+  onSubmitRecord,
+  onNavigateToFeed,
+  isGASConnected
+}) => {
+  const [grade, setGrade] = useState(studentProfile.grade || '3학년');
+  const [classNum, setClassNum] = useState(studentProfile.classNum || '2반');
+  const [studentName, setStudentName] = useState(studentProfile.studentName || '');
+  
+  const [bookTitle, setBookTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [publisher, setPublisher] = useState('');
+  const [category, setCategory] = useState<BookCategory>('문학/소설');
+  const [rating, setRating] = useState<number>(5);
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [readDate, setReadDate] = useState<string>(new Date().toISOString().substring(0, 10));
+  const [summary, setSummary] = useState('');
+  const [reflection, setReflection] = useState('');
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitFeedback, setSubmitFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // Keep synced if profile changes
+  useEffect(() => {
+    if (studentProfile.studentName) {
+      setGrade(studentProfile.grade);
+      setClassNum(studentProfile.classNum);
+      setStudentName(studentProfile.studentName);
+    }
+  }, [studentProfile]);
+
+  const handleAddPrompt = (promptText: string) => {
+    if (reflection.includes(promptText)) return;
+    setReflection(prev => (prev ? `${prev}\n\n${promptText} ` : `${promptText} `));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!studentName.trim()) {
+      alert('학생 이름을 입력해 주세요.');
+      return;
+    }
+    if (!bookTitle.trim()) {
+      alert('도서명을 입력해 주세요.');
+      return;
+    }
+    if (!summary.trim() || summary.trim().length < 10) {
+      alert('줄거리를 최소 10자 이상 작성해 주세요.');
+      return;
+    }
+    if (!reflection.trim() || reflection.trim().length < 10) {
+      alert('독후감 소감을 최소 10자 이상 작성해 주세요.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitFeedback(null);
+
+    try {
+      const result = await onSubmitRecord({
+        grade,
+        classNum,
+        studentName: studentName.trim(),
+        bookTitle: bookTitle.trim(),
+        author: author.trim() || '미상',
+        publisher: publisher.trim() || '미상',
+        category,
+        rating,
+        readDate,
+        summary: summary.trim(),
+        reflection: reflection.trim()
+      });
+
+      // Trigger Confetti Celebration!
+      try {
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      } catch (e) {
+        // Fallback silently if canvas context is restricted
+      }
+
+      setSubmitFeedback({
+        type: 'success',
+        message: result.message || '독서록이 등록되었습니다!'
+      });
+
+      // Reset form fields
+      setBookTitle('');
+      setAuthor('');
+      setPublisher('');
+      setSummary('');
+      setReflection('');
+
+      // Auto redirect to feed after 1.8 seconds
+      setTimeout(() => {
+        onNavigateToFeed();
+      }, 1800);
+
+    } catch (err: any) {
+      setSubmitFeedback({
+        type: 'error',
+        message: err.message || '등록 중 오류가 발생했습니다. 다시 시도해 주세요.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6 pb-12 animate-fade-in">
+      
+      {/* Banner Card */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-indigo-900/80 via-slate-900 to-violet-950/80 border border-indigo-500/30 shadow-xl relative overflow-hidden">
+        <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>오늘의 생각 더하기</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              책 한 권의 감동을 독서록에 담아보세요!
+            </h2>
+            <p className="text-slate-300 text-xs sm:text-sm mt-1">
+              읽은 책의 줄거리와 나만의 솔직한 느낌을 기록하면 우리반 친구들과 공유할 수 있어요.
+            </p>
+          </div>
+
+          <div className="shrink-0 flex items-center gap-2">
+            {!isGASConnected && (
+              <span className="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-xl font-medium">
+                💾 로컬 저장 모드
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Form Box */}
+      <form onSubmit={handleSubmit} className="p-6 sm:p-8 bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl space-y-8">
+        
+        {/* Section 1: Student Metadata */}
+        <div>
+          <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+            1. 작성자 정보
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-slate-950/50 rounded-2xl border border-slate-800">
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">학년</label>
+              <select
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
+              >
+                {['1학년', '2학년', '3학년', '4학년', '5학년', '6학년', '중1', '중2', '중3', '고1', '고2', '고3'].map(g => (
+                  <option key={g} value={g}>{g}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">반</label>
+              <select
+                value={classNum}
+                onChange={(e) => setClassNum(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
+              >
+                {Array.from({ length: 15 }, (_, i) => `${i + 1}반`).map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">학생 이름 *</label>
+              <input
+                type="text"
+                required
+                value={studentName}
+                onChange={(e) => setStudentName(e.target.value)}
+                placeholder="예: 김민준"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: Book Info */}
+        <div>
+          <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+            2. 도서 기본 정보
+          </h3>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">도서명 (책 제목) *</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  required
+                  value={bookTitle}
+                  onChange={(e) => setBookTitle(e.target.value)}
+                  placeholder="예: 아몬드, 어린 왕자, 마당을 나온 암탉..."
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                />
+                <BookOpen className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">지은이 (저자)</label>
+                <input
+                  type="text"
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  placeholder="예: 손원평"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">출판사</label>
+                <input
+                  type="text"
+                  value={publisher}
+                  onChange={(e) => setPublisher(e.target.value)}
+                  placeholder="예: 창비"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+            </div>
+
+            {/* Category selection */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-2">도서 장르/카테고리</label>
+              <div className="flex flex-wrap gap-2">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    type="button"
+                    key={cat}
+                    onClick={() => setCategory(cat)}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-all ${
+                      category === cat
+                        ? 'bg-indigo-600 text-white border-indigo-500 shadow-md shadow-indigo-600/30'
+                        : 'bg-slate-950 text-slate-300 border-slate-700 hover:border-slate-600'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Rating & Date */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  나의 추천 별점: <strong className="text-amber-400 font-bold">{rating}점</strong>
+                </label>
+                <div className="flex items-center gap-1.5 bg-slate-950 p-2.5 rounded-xl border border-slate-700 w-fit">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      type="button"
+                      key={star}
+                      onClick={() => setRating(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className="p-1 focus:outline-none transition-transform hover:scale-125"
+                    >
+                      <Star
+                        className={`w-6 h-6 transition-colors ${
+                          (hoverRating || rating) >= star
+                            ? 'text-amber-400 fill-amber-400'
+                            : 'text-slate-600'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">읽은 날짜</label>
+                <input
+                  type="date"
+                  value={readDate}
+                  onChange={(e) => setReadDate(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Section 3: Summary */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+              3. 책의 줄거리 요약 *
+            </h3>
+            <span className="text-xs text-slate-400">
+              {summary.length}자 (최소 10자 권장)
+            </span>
+          </div>
+
+          <textarea
+            required
+            rows={3}
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            placeholder="책의 핵심 내용이나 줄거리를 간단히 간추려 작성해 보세요."
+            className="w-full bg-slate-950 border border-slate-700 rounded-2xl p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 custom-scrollbar leading-relaxed"
+          ></textarea>
+        </div>
+
+        {/* Section 4: Reflection & Prompts */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+              4. 나의 생각과 느낌 (독후감) *
+            </h3>
+            <span className="text-xs text-slate-400">
+              {reflection.length}자 (최소 10자 권장)
+            </span>
+          </div>
+
+          {/* Quick Helper Prompts */}
+          <div className="mb-3 p-3 bg-slate-950/70 rounded-xl border border-slate-800 space-y-2">
+            <div className="flex items-center gap-1.5 text-xs text-amber-300 font-semibold">
+              <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
+              <span>작성 도우미 (클릭 시 가이드 문구가 추가됩니다)</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {REFLECTION_PROMPTS.map((prompt, i) => (
+                <button
+                  type="button"
+                  key={i}
+                  onClick={() => handleAddPrompt(prompt)}
+                  className="px-2.5 py-1 bg-slate-850 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 rounded-lg text-xs text-slate-300 hover:text-white transition-colors"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <textarea
+            required
+            rows={5}
+            value={reflection}
+            onChange={(e) => setReflection(e.target.value)}
+            placeholder="책을 읽고 느낀 점, 깨달은 점, 주인공에게 하고 싶은 말 등을 자율적으로 작성해 주세요."
+            className="w-full bg-slate-950 border border-slate-700 rounded-2xl p-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 custom-scrollbar leading-relaxed"
+          ></textarea>
+        </div>
+
+        {/* Feedback Alert */}
+        {submitFeedback && (
+          <div
+            className={`p-4 rounded-xl border flex items-center gap-3 text-sm ${
+              submitFeedback.type === 'success'
+                ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-200'
+                : 'bg-rose-950/60 border-rose-500/40 text-rose-200'
+            }`}
+          >
+            {submitFeedback.type === 'success' ? (
+              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            ) : (
+              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
+            )}
+            <span>{submitFeedback.message}</span>
+          </div>
+        )}
+
+        {/* Form Actions */}
+        <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-slate-400">
+            * 제출 후에도 교사 및 학생 본인이 등록된 독서록을 확인할 수 있습니다.
+          </p>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold rounded-xl shadow-xl shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            {isSubmitting ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                <span>전송 중...</span>
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 text-amber-300" />
+                <span>독서록 등록하기</span>
+              </>
+            )}
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  );
+};
